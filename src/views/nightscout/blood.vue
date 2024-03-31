@@ -117,25 +117,8 @@ const getCurBlood = () => {
       day0.value = JSON.parse(JSON.stringify(res.data.response.day0));
       days.value = JSON.parse(JSON.stringify(res.data.response.day0));
       show()
-      if (curBlood.value !== null && curBlood.value.date_step !== null) {
-        let tempDiff = 5 - curBlood.value.date_step
-        if (tempDiff === 0)
-          minutes.value = 1;
-        else if (tempDiff > 0) {
-          if (tempDiff > 5) tempDiff = 5;
-          minutes.value = tempDiff;
-          seconds.value = tempDiff * 60
-        } else {
-          minutes.value = 1;
-          seconds.value = 1 * 60
-        }
-      } else {
-        minutes.value = 1;
-        seconds.value = 1 * 60
-      }
+      
     } else {
-      minutes.value = 1;
-      seconds.value = 1 * 60
       ElMessage.error(res.data.msg)
     }
 
@@ -224,48 +207,27 @@ const show = () => {
 
   let zoomStartIndex = 0;
 
-  let flagCount = 8;
-  let count = 0;
-  let index = -1;
+  let flagCount = 300;
+  
 
   if (bloodHour.value === '1') {
-    flagCount = 1
+    flagCount = 13
     showChartType.value = 'scatter'
   } else if (bloodHour.value === '3') {
-    flagCount = 2
+    flagCount = 35
     showChartType.value = 'scatter'
   } else if (bloodHour.value === '6') {
-    flagCount = 3
+    flagCount = 75
     showChartType.value = 'scatter'
   } else if (bloodHour.value === '12') {
-    flagCount = 4
+    flagCount = 150
     showChartType.value = 'line'
   } else if (bloodHour.value === '24') {
-    flagCount = 8
+    flagCount = 295
     showChartType.value = 'line'
   }
-  if (flagCount != 0) {
-    for (let i = day0.value.length - 1; i >= 0; i--) {
-      if (day0.value[i] && day0.value[i].showLabel) {
-        count++;
-        if (flagCount === count) {
-          index = i;
-          zoomStartIndex = index;
-          break;
-        }
-      }
-    }
-  } else {
-    zoomStartIndex = 0
-  }
-  //偏移
-  if (bloodHour.value === '2') {
-    zoomStartIndex += 4
-  } else if (bloodHour.value === '3') {
-    zoomStartIndex += 3
-  } if (bloodHour.value === '4') {
-    zoomStartIndex += 2
-  }
+  zoomStartIndex = day0.value.length - flagCount
+
 
 
   const option = {
@@ -392,7 +354,7 @@ const show = () => {
         // smooth: true,
         // symbol: "none",
         // xAxisIndex: 0,
-        // connectNulls: true,
+        connectNulls: true,
         // color: lineGreen
       },
       {
@@ -405,7 +367,7 @@ const show = () => {
               name: "低",
               lineStyle: { color: "blue" },
               label: {
-                formatter: "低",
+                formatter: "低\r\n3.9",
                 padding: [0, 0, 10, 0],
                 position: 'end'
               },
@@ -415,7 +377,7 @@ const show = () => {
               name: "高",
               lineStyle: { color: "red" },
               label: {
-                formatter: "高",
+                formatter: "高\r\n10",
                 padding: [0, 0, 10, 0],
                 position: 'end'
               },
@@ -476,7 +438,8 @@ const show = () => {
         labelFormatter: (index, value) => {
           if (index >= 0)
             return day0.value[index].date_str
-        }
+        },
+        moveOnMouseMove: true,  // 禁止鼠标移动时拖动
       },
       {
         zoomLock: true, // 这个开启之后只能通过鼠标左右拉动，不能滚动显示
@@ -586,7 +549,7 @@ const show = () => {
 
       <!-- 日期筛选 -->
       <div style="font-size: 12px;color: silver;height: 21px;text-align: center;">
-        <el-select clearable @change="handleOneDay" v-model="curDate" placeholder="请选择所选日期" size="small"
+        <el-select clearable @change="handleOneDay" v-model="curDate" placeholder="请选择要查看的日期" size="small"
           style="width: 240px;text-align: center;">
           <el-option v-for="(item, index) in allDays" :key="index" :label="item" :value="item" />
         </el-select>
