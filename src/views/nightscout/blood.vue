@@ -18,15 +18,7 @@ onMounted(() => {
   ticket.value = route.query.ticket
   // 初始化dom
   initMapChart();
-
-  if (ticket.value) {
-    //绑定
-
-
-  } else {
-    //查看
-    getData();
-  }
+  getData()
 });
 
 onUnmounted(() => {
@@ -93,12 +85,12 @@ const getData = () => {
       } else {
         ElMessage.error(res.data.msg)
       }
-      // setWork();
+      getCurBlood()
     })
 
   } else {
     //查看
-    // setWork();
+    countDow.value = Date.now() 
   }
 }
 
@@ -151,7 +143,7 @@ const getCurBlood = () => {
     minutes.value = 1;
     seconds.value = 1 * 60
     console.info("err", err)
-    ElMessage.error(err)
+    // ElMessage.error(err)
   }).finally(() => {
     isRequest.value = false
   })
@@ -625,7 +617,7 @@ const show = () => {
 
 
   <!-- 传感器时间 -->
-  <el-dialog v-model="showProbe" title="记录传感器时间" width="450px" :before-close="handleClose">
+  <el-dialog v-model="showProbe" title="记录传感器启用时间" width="450px" :before-close="handleClose">
     <el-form @submit.prevent ref="refForm" :model="probeForm" label-width="80px" status-icon label-position="top">
       <el-form-item prop="time" label="请选择传感器启用时间" width sortable>
         <el-date-picker value-format="YYYY-MM-DD HH:mm:ss" v-model="probeForm.time" type="datetime"
