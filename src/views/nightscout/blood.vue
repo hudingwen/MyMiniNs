@@ -559,14 +559,11 @@ const show = () => {
       <el-divider content-position="left"><strong>信息</strong></el-divider>
 
       <div v-if="curBlood.probeStartTime" style="font-size: 12px;color: silver;height: 21px;text-align: center;">
-        传感器启用时间: <label> <strong>{{ curBlood.probeStartTime }}</strong></label>
+        传感器启用时间: <strong>{{ curBlood.probeStartTime }}</strong>
         已使用:
-        <label> <strong style="color: red;">{{ curBlood.probeUseDays }}</strong>
-          天</label>
-        <label> <strong style="color: red;">{{ curBlood.probeUseHours
-            }}</strong>小时</label>
-        <label> <strong style="color: red;">{{ curBlood.probeUseMinutes
-            }}</strong>分钟</label>
+        <strong style="color: red;">{{ curBlood.probeUseDays }}</strong> 天
+        <strong style="color: red;">{{ curBlood.probeUseHours }}</strong> 小时
+        <!-- <strong style="color: red;">{{ curBlood.probeUseMinutes }}</strong> 分 -->
       </div>
     </el-col>
 
