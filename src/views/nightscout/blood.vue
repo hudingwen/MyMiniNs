@@ -90,7 +90,7 @@ const getData = () => {
 
   } else {
     //查看
-    countDow.value = Date.now() 
+    countDow.value = Date.now()
   }
 }
 
@@ -117,7 +117,7 @@ const getCurBlood = () => {
       day0.value = JSON.parse(JSON.stringify(res.data.response.day0));
       days.value = JSON.parse(JSON.stringify(res.data.response.day0));
       show()
-      
+
     } else {
       ElMessage.error(res.data.msg)
     }
@@ -208,7 +208,7 @@ const show = () => {
   let zoomStartIndex = 0;
 
   let flagCount = 300;
-  
+
 
   if (bloodHour.value === '1') {
     flagCount = 13
@@ -336,7 +336,7 @@ const show = () => {
       // min 是最小的值
       max: 18,
       // max 是最大的值
-      splitNumber: 4,
+      splitNumber: 3,
     },
     series: [
       // {
@@ -425,7 +425,6 @@ const show = () => {
         }
       }
     ],
-
     dataZoom: [
       {
         show: true,
@@ -440,6 +439,7 @@ const show = () => {
             return day0.value[index].date_str
         },
         moveOnMouseMove: true,  // 禁止鼠标移动时拖动
+        left: '35px', // 设置左侧距离
       },
       {
         zoomLock: true, // 这个开启之后只能通过鼠标左右拉动，不能滚动显示
@@ -550,7 +550,7 @@ const show = () => {
       <!-- 日期筛选 -->
       <div style="font-size: 12px;color: silver;height: 21px;text-align: center;">
         <el-select clearable @change="handleOneDay" v-model="curDate" placeholder="请选择要查看的日期" size="small"
-          style="width: 240px;text-align: center;">
+          style="width: 180px;margin: 0 auto;">
           <el-option v-for="(item, index) in allDays" :key="index" :label="item" :value="item" />
         </el-select>
       </div>
