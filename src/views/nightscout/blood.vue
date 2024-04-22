@@ -36,7 +36,7 @@ const curBlood = ref({ date_step: 0 })
 const curDate = ref('')
 const curTime = ref('')
 const allDays = ref([])
-
+const groupDaysPercent = ref([])
 const days = ref([])
 const day0 = ref([])
 const day1 = ref([])
@@ -105,6 +105,7 @@ const getCurBlood = () => {
     if (res.data.success) {
       curBlood.value = res.data.response.curBlood
       allDays.value = res.data.response.groupDays
+      groupDaysPercent.value = res.data.response.groupDaysPercent
       if (curBlood.value.date_day)
         curDate.value = curBlood.value.date_day
 
@@ -551,7 +552,7 @@ const show = () => {
       <div style="font-size: 12px;color: silver;height: 21px;text-align: center;">
         <el-select clearable @change="handleOneDay" v-model="curDate" placeholder="请选择要查看的日期" size="small"
           style="width: 180px;margin: 0 auto;">
-          <el-option v-for="(item, index) in allDays" :key="index" :label="item" :value="item" />
+          <el-option v-for="(item, index) in allDays" :key="index" :label="item+'(达标率:'+groupDaysPercent[index]+')'" :value="item" />
         </el-select>
       </div>
     </el-col>
