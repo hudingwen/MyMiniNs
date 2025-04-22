@@ -33,6 +33,7 @@ let myChart = null;
 //血糖步伐
 const bloodHour = ref("24");
 const curBlood = ref({ date_step: 0 })
+const allInfo = ref(null)
 const curDate = ref('')
 const curTime = ref('')
 const allDays = ref([])
@@ -103,6 +104,7 @@ const getCurBlood = () => {
 
   GetCurBloodSugar({ openid: openid.value }).then(res => {
     if (res.data.success) {
+      allInfo.value = res.data.response
       curBlood.value = res.data.response.curBlood
       allDays.value = res.data.response.groupDays
       groupDaysPercent.value = res.data.response.groupDaysPercent
@@ -187,7 +189,13 @@ const handleSubmitTime = () => {
     // setWork();
   })
 }
+//续费
+const handlePay = () => {
+  if (allInfo.value) {
+    window.location.href = allInfo.value.expireInfo.payUrl
+  }
 
+}
 //窗口关闭
 const handleClose = (done) => {
   ElMessageBox.confirm('确定关闭么?')
@@ -476,6 +484,9 @@ const show = () => {
             <el-dropdown-menu>
               <el-dropdown-item @click="getCurBlood">1.刷新实时血糖</el-dropdown-item>
               <el-dropdown-item @click="handleProbe">2.记录传感器启用时间</el-dropdown-item>
+              <el-dropdown-item @click="handlePay">3.点击续费</el-dropdown-item>
+
+
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -504,7 +515,7 @@ const show = () => {
               <el-col>
                 <label
                   :style="{ 'color': (curBlood.sgv_str >= 10 || curBlood.sgv_str <= 3.9 ? 'red' : 'green'), 'font-weight': 900, 'font-size': '31px', 'margin-top': '10px' }">{{
-            curBlood.sgv_str }}</label>
+                    curBlood.sgv_str }}</label>
               </el-col>
               <el-col>
                 <label style="font-size: 12px;">mmol/L</label>
@@ -552,12 +563,18 @@ const show = () => {
       <div style="font-size: 12px;color: silver;height: 21px;text-align: center;">
         <el-select clearable @change="handleOneDay" v-model="curDate" placeholder="请选择要查看的日期" size="small"
           style="width: 180px;margin: 0 auto;">
-          <el-option v-for="(item, index) in allDays" :key="index" :label="item+'(达标率:'+groupDaysPercent[index]+')'" :value="item" />
+          <el-option v-for="(item, index) in allDays" :key="index"
+            :label="item + '(达标率:' + groupDaysPercent[index] + ')'" :value="item" />
         </el-select>
       </div>
     </el-col>
     <el-col>
       <el-divider content-position="left"><strong>信息</strong></el-divider>
+
+      <div v-if="allInfo && allInfo.expireInfo && allInfo.expireInfo.isCanShowExpire" style="font-size: 12px;color: silver;height: 21px;text-align: center;">
+        远程到期时间: <strong style="color: red;">{{ allInfo.expireInfo.endTimeStr }}</strong>  <strong v-html="allInfo.expireInfo.payText"> </strong>
+        
+      </div>
 
       <div v-if="curBlood.probeStartTime" style="font-size: 12px;color: silver;height: 21px;text-align: center;">
         传感器启用时间: <strong>{{ curBlood.probeStartTime }}</strong>
